@@ -1,9 +1,9 @@
 {
   "name": "lb-request",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "yang cong primary lb:// protocol request",
   "main": "dist/index.js",
-  "repository": "github.com/wanglihui/lb-request.git",
+  "repository": "git@github.com:wanglihui/lb-request.git",
   "author": "wanglihui.sjz@gmail.com",
   "license": "MIT",
   "devDependencies": {
