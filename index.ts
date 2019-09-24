@@ -2,10 +2,16 @@ import request = require("request");
 
 let avaServices: {[index: string]: string} = {};
 
-export interface ILbRequestConfig {env?: string, protocol?: string};
+export interface ILbRequestConfig {env?: string, protocol?: string, formatServiceNameFn?: {(serviceName: string):string},};
 let lbRequestConfig: ILbRequestConfig = {
     env: 'master',
-    protocol: 'http://'
+    protocol: 'http://',
+    formatServiceNameFn: function(serviceName) {
+        if (lbRequestConfig.env) {
+            serviceName += '-' + lbRequestConfig.env
+        }
+        return serviceName;
+    }
 }
 
 const LBReg = /^lb:\/\/([^\/]+)(.*)/;
@@ -37,11 +43,10 @@ function replaceLbProtocol(lbUri: string) {
         let serviceName = groups[1];
         if (avaServices[serviceName]) {
             serviceName = avaServices[serviceName];
+        } else if (lbRequestConfig && typeof lbRequestConfig!.formatServiceNameFn == 'function') {
+            serviceName = lbRequestConfig!.formatServiceNameFn(serviceName);
         }
         url += serviceName;
-        if (lbRequestConfig.env) {
-            url += '-' + lbRequestConfig.env
-        }
         url += groups[2];
         return  url;
     }
