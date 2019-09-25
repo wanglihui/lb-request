@@ -33,6 +33,18 @@ const lbRequest = new Proxy<request.RequestAPI<request.Request, request.CoreOpti
     }
 });
 
+//@ts-ignore
+export function lbRequestPromise(target: request.RequestAPI<request.Request, request.CoreOptions, request.RequiredUriUrl>) {
+    return new Promise( (resolve, reject) => {
+        lbRequest(target, (err: Error|null, resp: any, body: any) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(body);
+        })
+    })
+}
+
 function replaceLbProtocol(lbUri: string) {
     if (!lbUri) return lbUri;
     if (typeof lbUri !== "string") return lbUri;
