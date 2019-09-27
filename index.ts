@@ -33,8 +33,8 @@ const lbRequest = new Proxy<request.RequestAPI<request.Request, request.CoreOpti
     }
 });
 
-//@ts-ignore
-export function lbRequestPromise(target: request.RequestAPI<request.Request, request.CoreOptions, request.RequiredUriUrl>) {
+// @ts-ignore
+export function lbRequestPromise(target: any) {
     return new Promise( (resolve, reject) => {
         lbRequest(target, (err: Error|null, resp: any, body: any) => {
             if (err) {
