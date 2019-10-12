@@ -2,8 +2,9 @@ import request = require("request");
 
 let avaServices: {[index: string]: string} = {};
 
-export interface ILbRequestConfig {env?: string, protocol?: string, formatServiceNameFn?: {(serviceName: string):string},};
+export interface ILbRequestConfig {debug?: boolean; env?: string, protocol?: string, formatServiceNameFn?: {(serviceName: string):string},};
 let lbRequestConfig: ILbRequestConfig = {
+    debug: false,
     env: 'master',
     protocol: 'http://',
     formatServiceNameFn: function(serviceName) {
@@ -36,9 +37,17 @@ const lbRequest = new Proxy<request.RequestAPI<request.Request, request.CoreOpti
 // @ts-ignore
 export function lbRequestPromise(target: any) {
     return new Promise( (resolve, reject) => {
+        if (lbRequestConfig.debug) {
+            console.debug(`lb-request request`)
+            console.debug(target);
+        }
         lbRequest(target, (err: Error|null, resp: any, body: any) => {
             if (err) {
                 return reject(err);
+            }
+            if (lbRequestConfig.debug) {
+                console.debug(`lb-request response`);
+                console.debug(body);
             }
             resolve(body);
         })
