@@ -1,6 +1,6 @@
 {
   "name": "lb-request",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "description": "yang cong primary lb:// protocol request",
   "main": "dist/index.js",
   "repository": "git@github.com:wanglihui/lb-request.git",
@@ -11,6 +11,7 @@
     "@types/node": "^12.7.5",
     "@types/request": "^2.48.3",
     "mocha": "^6.2.0",
+    "nock": "^11.7.0",
     "request": "^2.88.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
@@ -19,5 +20,8 @@
     "dist/",
     "package.json",
     "README.md"
-  ]
+  ],
+  "dependencies": {
+    "lb-service": "^1.0.1"
+  }
 }

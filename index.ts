@@ -1,18 +1,13 @@
 import request = require("request");
+import {init as lbServiceInit, getServiceAddress} from 'lb-service'
 
-let avaServices: {[index: string]: string} = {};
+// let avaServices: {[index: string]: string} = {};
 
-export interface ILbRequestConfig {debug?: boolean; env?: string, protocol?: string, formatServiceNameFn?: {(serviceName: string):string},};
+export interface ILbRequestConfig {debug?: boolean; endfix?: string, protocol?: string};
 let lbRequestConfig: ILbRequestConfig = {
     debug: false,
-    env: 'master',
+    endfix: '',
     protocol: 'http://',
-    formatServiceNameFn: function(serviceName) {
-        if (lbRequestConfig.env) {
-            serviceName += '-' + lbRequestConfig.env
-        }
-        return serviceName;
-    }
 }
 
 const LBReg = /^lb:\/\/([^\/]+)(.*)/;
@@ -62,11 +57,7 @@ function replaceLbProtocol(lbUri: string) {
     if (groups && groups.length) {
         let url = lbRequestConfig.protocol;
         let serviceName = groups[1];
-        if (avaServices[serviceName]) {
-            serviceName = avaServices[serviceName];
-        } else if (lbRequestConfig && typeof lbRequestConfig!.formatServiceNameFn == 'function') {
-            serviceName = lbRequestConfig!.formatServiceNameFn(serviceName);
-        }
+        serviceName = getServiceAddress(serviceName);
         url += serviceName;
         url += groups[2];
         return  url;
@@ -77,8 +68,9 @@ function replaceLbProtocol(lbUri: string) {
 export {lbRequest};
 
 export function init(lbServices: {[index: string]: string}, config?: ILbRequestConfig) {
-    if (lbServices){
-        avaServices = lbServices;
-    }
+    lbServiceInit({
+        services: lbServices,
+        endfix: config && config.endfix || ''
+    })
     lbRequestConfig = Object.assign(lbRequestConfig, config);
 }
